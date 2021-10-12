@@ -121,6 +121,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Writing data to a file to test what I'm getting... Resulting output is a map.
 	f, err := os.Create("data.txt")
 
 	if err != nil {
