@@ -1,1 +1,1 @@
-web: bin\dnd_item_tracker
+web: bin/dnd_item_tracker
