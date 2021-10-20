@@ -152,7 +152,7 @@ func main() {
 
 	SetIDs(Items)
 
-	msg := "<header>Welcome to the Handy Haversack Web Server</header>\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item name or ID (int) after 'items/'."
+	msg := "Welcome to the Handy Haversack Web Server\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item name or ID (int) after 'items/'."
 
 	http.Handle("/", &defaultHandler{Message: msg})
 	http.HandleFunc("/items/", itemHandler)
