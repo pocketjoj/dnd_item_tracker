@@ -94,6 +94,16 @@ func parseRequest(s string) *Item {
 	return nil
 }
 
+// Basic default handler
+
+type defaultHandler struct {
+	Message string
+}
+
+func (f *defaultHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(f.Message))
+}
+
 // Handler function for requests made for items
 func itemHandler(w http.ResponseWriter, r *http.Request) {
 	urlPathSegments := strings.Split(r.URL.Path, "items/")
@@ -143,6 +153,7 @@ func main() {
 	SetIDs(Items)
 
 	// fmt.Println(GetItemByID(1200, Items))
+	http.Handle("/", &defaultHandler{Message: "Hello World!"})
 	http.HandleFunc("/items/", itemHandler)
 
 	port := os.Getenv("PORT")
