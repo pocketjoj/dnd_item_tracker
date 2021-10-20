@@ -14,25 +14,22 @@ import (
 // Main struct that will handle data; each "item" will have some of the following properties, so we can then call these properties as needed.
 
 type Item struct {
-	Name    string                 `json:"name"`
-	Sources map[string]interface{} `json:"sources"`
-	Rarity  string                 `json:"rarity"`
-	Entries []interface{}          `json:"entries"`
-	//Attunement requires formatting based on entry.
-	Attunement string                 `json:"reqAttune"`
-	Type       string                 `json:"type"`
-	Properties []interface{}          `json:"properties"`
-	Damage     map[string]interface{} `json:"damage"`
-	Tier       string                 `json:"tier"`
-	//Srd has bool and string - will need switch case.
-	Srd interface{} `json:"srd"`
-	//Charges appears to contain a mixture of strings and numbers; will need to check this.
-	Charges   interface{}            `json:"charges"`
-	Image     bool                   `json:"image"`
-	Range     string                 `json:"range"`
-	Container bool                   `json:"container"`
-	Extends   map[string]interface{} `json:"extends"`
-	ID        int                    `json:"id"`
+	Name       string                 `json:"name,omitempty"`
+	Sources    map[string]interface{} `json:"sources,omitempty"`
+	Rarity     string                 `json:"rarity,omitempty"`
+	Entries    []interface{}          `json:"entries,omitempty"`
+	Attunement string                 `json:"reqAttune,omitempty"` //Attunement requires formatting based on entry.
+	Type       string                 `json:"type,omitempty"`
+	Properties []interface{}          `json:"properties,omitempty"`
+	Damage     map[string]interface{} `json:"damage,omitempty"`
+	Tier       string                 `json:"tier,omitempty"`
+	Srd        interface{}            `json:"srd,omitempty"`     //Srd has bool and string - will need switch case.
+	Charges    interface{}            `json:"charges,omitempty"` //Charges appears to contain a mixture of strings and numbers; will need to check this.
+	Image      bool                   `json:"image,omitempty"`
+	Range      string                 `json:"range,omitempty"`
+	Container  bool                   `json:"container,omitempty"`
+	Extends    map[string]interface{} `json:"extends,omitempty"`
+	ID         int                    `json:"id,omitempty"`
 }
 
 // Declaring variable outside of func main so that functions will have access to it.
