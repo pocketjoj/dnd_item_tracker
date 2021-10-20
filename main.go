@@ -61,7 +61,7 @@ func GetItemByID(id int) *Item {
 //Pass in name, get item returned.
 func GetItemByName(n string) *Item {
 	for _, i := range Items {
-		if i.Name == n {
+		if strings.EqualFold(i.Name, n) {
 			return &i
 		}
 	}
