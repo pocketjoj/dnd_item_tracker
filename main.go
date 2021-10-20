@@ -144,5 +144,11 @@ func main() {
 
 	// fmt.Println(GetItemByID(1200, Items))
 	http.HandleFunc("/items/", itemHandler)
-	http.ListenAndServe(":5000", nil)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9000" // Default port if not specified
+	}
+
+	http.ListenAndServe(port, nil)
 }
