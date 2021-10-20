@@ -111,6 +111,7 @@ func itemHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(itemJSON)
+		fmt.Println("Item retrieved")
 
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
