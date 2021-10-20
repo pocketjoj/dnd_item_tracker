@@ -155,11 +155,5 @@ func main() {
 	// fmt.Println(GetItemByID(1200, Items))
 	http.Handle("/", &defaultHandler{Message: "Hello World!"})
 	http.HandleFunc("/items/", itemHandler)
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "9000" // Default port if not specified
-	}
-
-	http.ListenAndServe(port, nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
