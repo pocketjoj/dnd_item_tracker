@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -24,34 +22,19 @@ func (f *defaultHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 	log.SetFlags(log.Lshortfile)
 
+	// -------- Setting up item database. --------
 	var Items databasehelper.ItemList
+	Items.RefreshList()
 
-	// Opening json file and reading data from it.
-	data, err := os.Open("items.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer data.Close()
+	// -------- Setting up character database. --------
+	Crew := make(databasehelper.CharacterList)
+	Crew.RefreshList()
 
-	byteValue, err := ioutil.ReadAll(data)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//Unmarshaling json data into a collection of Items.
-	err = json.Unmarshal(byteValue, &Items)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	Items.SetIDs()
-
-	msg := "Welcome to the Handy Haversack Web Server\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item name or ID (int) after 'items/'."
+	msg := "Welcome to the Handy Haversack Web Server\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item ID (int) after 'items/'."
 
 	http.HandleFunc("/items/name/", Items.NameHandler)
 	http.HandleFunc("/items/", Items.IDHandler)
 	http.Handle("/", &defaultHandler{Message: msg})
-
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
@@ -68,5 +51,6 @@ TO DO LIST
 -- Look into refactoring to make code cleaner... use different packages?
 -- Review comments; ensure clarity and brevity.
 -- Write concise readme for project.
+-- Decide whether ItemList should be map or slice.
 
 */

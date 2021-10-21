@@ -3,22 +3,24 @@ package databasehelper
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
 
 // Interface with methods that will apply to all database types (e.g. items, characters, etc.)
-
-type DB interface {
-	SetIDs()
-	GetItemByID(id int) *Item
-	GetItemByName(n string) *Item
-	AddItem(data string, items []Item) []Item
-	idHandler(w http.ResponseWriter, r *http.Request)
-	NameHandler(w http.ResponseWriter, r *http.Request)
-}
+//Not sure if I need this at all...
+// type DB interface {
+// 	SetIDs()
+// 	GetItemByID(id int) *Item
+// 	GetItemByName(n string) *Item
+// 	AddItem(data string, items []Item) []Item
+// 	idHandler(w http.ResponseWriter, r *http.Request)
+// 	NameHandler(w http.ResponseWriter, r *http.Request)
+// }
 
 // Main struct that will handle data; each item will have some of the following properties, so we can then call these properties as needed.
 
@@ -41,31 +43,31 @@ type Item struct {
 	ID         int                    `json:"id"`
 }
 
-type ItemList []Item
+type ItemList map[int]Item
 
 // ItemList Helper Methods --------------------
 
-// Sets all IDs on initial load of program.
-func (i ItemList) SetIDs() {
-	for index := range i {
-		i[index].ID = index + 1
+func (i *ItemList) RefreshList() {
+	c_data, err := os.Open("json_data/items.json")
+	if err != nil {
+		log.Fatal(err)
 	}
-}
+	defer c_data.Close()
 
-// Returns ItemList in the format of a map with the ID field as the key.
-
-func (i ItemList) GetMap() map[int]Item {
-	itemMap := make(map[int]Item)
-	for _, value := range i {
-		itemMap[value.ID] = value
+	c_byteValue, err := ioutil.ReadAll(c_data)
+	if err != nil {
+		log.Fatal(err)
 	}
-	return itemMap
+
+	err = json.Unmarshal(c_byteValue, &i)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Pass in ID, get item returned.
 func (i ItemList) GetItemByID(id int) Item {
-	m := i.GetMap()
-	return m[id]
+	return i[id]
 }
 
 //Pass in name, get item returned.
@@ -80,15 +82,15 @@ func (i ItemList) GetItemByName(n string) *Item {
 }
 
 //Add item by passing in json data.
-func (i ItemList) AddItem(data string) []Item {
+func (i ItemList) AddItem(data string) ItemList {
 	bytes := []byte(data)
 	var item Item
 	err := json.Unmarshal(bytes, &item)
 	if err != nil {
 		log.Fatal(err)
 	}
-	item.ID = len(i) + 1
-	return append(i, item)
+	i[len(i)+1] = item
+	return i
 }
 
 // ItemList Handler Methods
