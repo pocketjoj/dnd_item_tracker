@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -9,6 +10,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	firebase "firebase.google.com/go"
 )
 
 // Main struct that will handle data; each item will have some of the following properties, so we can then call these properties as needed.
@@ -151,6 +154,32 @@ func main() {
 	SetIDs(Items)
 
 	msg := "Welcome to the Handy Haversack Web Server\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item name or ID (int) after 'items/'."
+
+	// Firebase connection
+	ctx := context.Background()
+	config := &firebase.Config{
+		DatabaseURL: "https://database-name.firebaseio.com",
+	}
+	app, err := firebase.NewApp(ctx, config)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	client, err := app.Database(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	q := client.NewRef("Items")
+	var result map[string]Item
+	if err := q.Get(ctx, &result); err != nil {
+		log.Fatal(err)
+	}
+
+	// Results will be logged in no specific order.
+	for key, acc := range result {
+		log.Printf("%s => %v\n", key, acc)
+	}
 
 	http.Handle("/", &defaultHandler{Message: msg})
 	http.HandleFunc("/items/", itemHandler)
