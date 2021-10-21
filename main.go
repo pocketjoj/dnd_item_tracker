@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/pocketjoj/dnd_item_tracker/databasehelper"
 )
@@ -32,11 +31,12 @@ func main() {
 
 	msg := "Welcome to the Handy Haversack Web Server\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item ID (int) after 'items/'."
 
-	http.HandleFunc("/items/name/", Items.NameHandler)
-	http.HandleFunc("/items/", Items.IDHandler)
+	http.HandleFunc("/items/", Items.ItemHandler)
 	http.HandleFunc("/characters", Crew.Display)
 	http.Handle("/", &defaultHandler{Message: msg})
-	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	// http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	// Below is for local testing.
+	http.ListenAndServe(":5000", nil)
 }
 
 /*

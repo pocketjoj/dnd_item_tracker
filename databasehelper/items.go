@@ -95,34 +95,44 @@ func (i ItemList) AddItem(data string) ItemList {
 
 // ItemList Handler Methods
 
-func (i ItemList) IDHandler(w http.ResponseWriter, r *http.Request) {
-	urlPathSegments := strings.Split(r.URL.Path, "items/")
-	itemRequest, err := strconv.Atoi(urlPathSegments[len(urlPathSegments)-1])
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	item := i.GetItemByID(itemRequest)
-	switch r.Method {
-	case http.MethodGet:
-		itemJSON, err := json.Marshal(item)
+// func (i ItemList) IDHandler(w http.ResponseWriter, r *http.Request) {
+// 	urlPathSegments := strings.Split(r.URL.Path, "items/")
+// 	itemRequest, err := strconv.Atoi(urlPathSegments[len(urlPathSegments)-1])
+// 	if err != nil {
+// 		w.WriteHeader(http.StatusNotFound)
+// 		return
+// 	}
+// 	item := i.GetItemByID(itemRequest)
+// 	switch r.Method {
+// 	case http.MethodGet:
+// 		itemJSON, err := json.Marshal(item)
+// 		if err != nil {
+// 			w.WriteHeader(http.StatusInternalServerError)
+// 			return
+// 		}
+// 		w.Header().Set("Content-Type", "application/json")
+// 		w.Write(itemJSON)
+// 		fmt.Println("Item retrieved")
+
+// 	default:
+// 		w.WriteHeader(http.StatusMethodNotAllowed)
+// 	}
+// }
+
+func (i ItemList) ItemHandler(w http.ResponseWriter, r *http.Request) {
+	var item Item
+	query := r.URL.Query()
+	if len(query) == 0 {
+		urlPathSegments := strings.Split(r.URL.Path, "items/")
+		itemRequest, err := strconv.Atoi(urlPathSegments[len(urlPathSegments)-1])
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusNotFound)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(itemJSON)
-		fmt.Println("Item retrieved")
-
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		item = i.GetItemByID(itemRequest)
+	} else {
+		item = *i.GetItemByName(query["name"][0])
 	}
-}
-
-func (i ItemList) NameHandler(w http.ResponseWriter, r *http.Request) {
-	urlPathSegments := strings.Split(r.URL.Path, "name/")
-	itemRequest := urlPathSegments[len(urlPathSegments)-1]
-	item := i.GetItemByName(itemRequest)
 	switch r.Method {
 	case http.MethodGet:
 		itemJSON, err := json.Marshal(item)
