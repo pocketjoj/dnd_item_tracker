@@ -50,7 +50,7 @@ func main() {
 
 	http.Handle("/", &defaultHandler{Message: msg})
 	http.HandleFunc("/items/", Items.IDHandler)
-	http.HandleFunc("/items/?name=", Items.NameHandler)
+	http.Handle("/items/?name=", &defaultHandler{Message: "this is working"})
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
