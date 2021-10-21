@@ -12,6 +12,8 @@ import (
 	"strings"
 
 	firebase "firebase.google.com/go"
+	"google.golang.org/api/iterator"
+	"google.golang.org/api/option"
 )
 
 // Main struct that will handle data; each item will have some of the following properties, so we can then call these properties as needed.
@@ -153,37 +155,62 @@ func main() {
 
 	SetIDs(Items)
 
-	msg := "Welcome to the Handy Haversack Web Server\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item name or ID (int) after 'items/'."
+	// msg := "Welcome to the Handy Haversack Web Server\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item name or ID (int) after 'items/'."
 
 	// Firebase connection
 	ctx := context.Background()
-	config := &firebase.Config{
-		DatabaseURL: "https://database-name.firebaseio.com",
-	}
-	app, err := firebase.NewApp(ctx, config)
+	sa := option.WithCredentialsFile("credentials.json")
+	app, err := firebase.NewApp(ctx, nil, sa)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
-	client, err := app.Database(ctx)
+	client, err := app.Firestore(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
+	}
+	defer client.Close()
+
+	iter := client.Collection("Items").Documents(ctx)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Failed to iterate: %v", err)
+		}
+		fmt.Println(doc.Data())
 	}
 
-	q := client.NewRef("Items")
-	var result map[string]Item
-	if err := q.Get(ctx, &result); err != nil {
-		log.Fatal(err)
-	}
+	// ctx := context.Background()
+	// config := &firebase.Config{
+	// 	DatabaseURL: "https://dnd-project-b2aa4.firebaseio.com",
+	// }
+	// app, err := firebase.NewApp(ctx, config, option.WithCredentialsFile("credentials.json"))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	// Results will be logged in no specific order.
-	for key, acc := range result {
-		log.Printf("%s => %v\n", key, acc)
-	}
+	// client, err := app.Database(ctx)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	http.Handle("/", &defaultHandler{Message: msg})
-	http.HandleFunc("/items/", itemHandler)
-	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	// q := client.NewRef()
+	// var result map[string]Item
+	// if err := q.Get(ctx, &result); err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// // Results will be logged in no specific order.
+	// for key, acc := range result {
+	// 	log.Printf("%s => %v\n", key, acc)
+	// }
+
+	// http.Handle("/", &defaultHandler{Message: msg})
+	// http.HandleFunc("/items/", itemHandler)
+	// http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
 /*
