@@ -52,15 +52,20 @@ func (i ItemList) SetIDs() {
 	}
 }
 
-// Pass in ID, get item returned.
-func (i ItemList) GetItemByID(id int) *Item {
-	for _, i := range i {
-		if i.ID == id {
-			return &i
-		}
+// Returns ItemList in the format of a map with the ID field as the key.
+
+func (i ItemList) GetMap() map[int]Item {
+	itemMap := make(map[int]Item)
+	for _, value := range i {
+		itemMap[value.ID] = value
 	}
-	fmt.Println("ID not found")
-	return nil
+	return itemMap
+}
+
+// Pass in ID, get item returned.
+func (i ItemList) GetItemByID(id int) Item {
+	m := i.GetMap()
+	return m[id]
 }
 
 //Pass in name, get item returned.
