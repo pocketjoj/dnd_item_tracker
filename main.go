@@ -34,6 +34,7 @@ func main() {
 
 	http.HandleFunc("/items/name/", Items.NameHandler)
 	http.HandleFunc("/items/", Items.IDHandler)
+	http.HandleFunc("/characters", Crew.Display)
 	http.Handle("/", &defaultHandler{Message: msg})
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
