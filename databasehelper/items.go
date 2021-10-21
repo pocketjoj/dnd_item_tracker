@@ -113,13 +113,9 @@ func (i ItemList) IDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (i ItemList) NameHandler(w http.ResponseWriter, r *http.Request) {
-	urlPathSegments := strings.Split(r.URL.Path, "?name=")
-	itemRequest, err := strconv.Atoi(urlPathSegments[len(urlPathSegments)-1])
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	item := i.GetItemByID(itemRequest)
+	urlPathSegments := strings.Split(r.URL.Path, "name/")
+	itemRequest := urlPathSegments[len(urlPathSegments)-1]
+	item := i.GetItemByName(itemRequest)
 	switch r.Method {
 	case http.MethodGet:
 		itemJSON, err := json.Marshal(item)
