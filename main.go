@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Main struct that will handle data; each "item" will have some of the following properties, so we can then call these properties as needed.
+// Main struct that will handle data; each item will have some of the following properties, so we can then call these properties as needed.
 
 type Item struct {
 	Name       string                 `json:"name,omitempty"`
@@ -29,13 +29,13 @@ type Item struct {
 	Range      string                 `json:"range,omitempty"`
 	Container  bool                   `json:"container,omitempty"`
 	Extends    map[string]interface{} `json:"extends,omitempty"`
-	ID         int                    `json:"id,omitempty"`
+	ID         int                    `json:"id"`
 }
 
-// Declaring variable outside of func main so that functions will have access to it.
+// Declaring variable outside of func main so that helper functions will have access to it.
 var Items []Item
 
-//Helper Functions
+//Helper Functions --------------------
 
 // Sets all IDs on initial load of program.
 func SetIDs(i []Item) {
@@ -91,8 +91,9 @@ func parseRequest(s string) *Item {
 	return nil
 }
 
-// Basic default handler
+// Handler functions --------------------
 
+// Basic default handler
 type defaultHandler struct {
 	Message string
 }
@@ -155,3 +156,19 @@ func main() {
 	http.HandleFunc("/items/", itemHandler)
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
+
+/*
+TO DO LIST
+
+-- Format certain fields (per notes in Item Struct above).
+-- Create Character structure.
+-- Add method for adding item(s)
+-- Add method for removing item(s)
+-- Add method for moving items between characters.
+-- Designate handlers for all of the above methods.
+-- Figure out if we want to plug in database for this.
+-- Look into refactoring to make code cleaner... use different packages?
+-- Review comments; ensure clarity and brevity.
+-- Write concise readme for project.
+
+*/
