@@ -93,32 +93,6 @@ func (i ItemList) AddItem(data string) ItemList {
 	return i
 }
 
-// ItemList Handler Methods
-
-// func (i ItemList) IDHandler(w http.ResponseWriter, r *http.Request) {
-// 	urlPathSegments := strings.Split(r.URL.Path, "items/")
-// 	itemRequest, err := strconv.Atoi(urlPathSegments[len(urlPathSegments)-1])
-// 	if err != nil {
-// 		w.WriteHeader(http.StatusNotFound)
-// 		return
-// 	}
-// 	item := i.GetItemByID(itemRequest)
-// 	switch r.Method {
-// 	case http.MethodGet:
-// 		itemJSON, err := json.Marshal(item)
-// 		if err != nil {
-// 			w.WriteHeader(http.StatusInternalServerError)
-// 			return
-// 		}
-// 		w.Header().Set("Content-Type", "application/json")
-// 		w.Write(itemJSON)
-// 		fmt.Println("Item retrieved")
-
-// 	default:
-// 		w.WriteHeader(http.StatusMethodNotAllowed)
-// 	}
-// }
-
 func (i ItemList) ItemHandler(w http.ResponseWriter, r *http.Request) {
 	var item Item
 	query := r.URL.Query()
