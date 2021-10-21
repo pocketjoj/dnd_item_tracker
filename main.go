@@ -48,9 +48,10 @@ func main() {
 
 	msg := "Welcome to the Handy Haversack Web Server\n\nTo use this web server, place a call to https://handyhaversack.herokuapp.com/items/ and place the item name or ID (int) after 'items/'."
 
-	http.Handle("/", &defaultHandler{Message: msg})
+	http.Handle(`/items/\?name=`, &defaultHandler{Message: "this is working"})
 	http.HandleFunc("/items/", Items.IDHandler)
-	http.Handle(`/items/?name=`, &defaultHandler{Message: "this is working"})
+	http.Handle("/", &defaultHandler{Message: msg})
+
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
