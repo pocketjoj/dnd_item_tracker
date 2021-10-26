@@ -33,6 +33,11 @@ func (c *Character) RemoveItemByID(id int) {
 	}
 }
 
+func (c *Character) GiveItem(id int, otherc *Character, i ItemList) {
+	c.RemoveItemByID(id)
+	otherc.AddItemByID(id, i)
+}
+
 type CharacterList map[int]Character
 
 //CharacterList Helper Functions

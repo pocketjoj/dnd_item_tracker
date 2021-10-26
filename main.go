@@ -44,15 +44,8 @@ func main() {
 TO DO LIST
 
 -- Format certain fields (per notes in Item Struct above).
--- Create Character structure.
--- Add method for adding item(s)
--- Add method for removing item(s)
--- Add method for moving items between characters.
--- Designate handlers for all of the above methods.
--- Figure out if we want to plug in database for this.
--- Look into refactoring to make code cleaner... use different packages?
+-- Designate handlers for character methods.
 -- Review comments; ensure clarity and brevity.
 -- Write concise readme for project.
--- Decide whether ItemList should be map or slice.
 
 */
