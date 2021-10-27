@@ -1,13 +1,10 @@
-package databasehelper
+package main
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
-	"net/http"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -23,6 +20,8 @@ import (
 // }
 
 // Main struct that will handle data; each item will have some of the following properties, so we can then call these properties as needed.
+
+// Use json.RawMessage for the interface information. Will need to write a function to decode those items.
 
 type Item struct {
 	Name       string                 `json:"name,omitempty"`
@@ -43,82 +42,45 @@ type Item struct {
 	ID         int                    `json:"id"`
 }
 
-type ItemList map[int]Item
-
 // ItemList Helper Methods --------------------
 
-func (i *ItemList) RefreshList() {
-	c_data, err := os.Open("json_data/items.json")
+func LoadItems(filename string) (map[int]Item, error) {
+	f, err := os.Open(filename)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("could not load items: %w", err)
 	}
-	defer c_data.Close()
+	defer f.Close()
 
-	c_byteValue, err := ioutil.ReadAll(c_data)
+	b, err := ioutil.ReadAll(f)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("could not read %s: %w", f.Name(), err)
 	}
-
-	err = json.Unmarshal(c_byteValue, &i)
+	items := make(map[int]Item)
+	err = json.Unmarshal(b, &items)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("could not load items: %w", err)
 	}
-}
-
-// Pass in ID, get item returned.
-func (i ItemList) GetItemByID(id int) Item {
-	return i[id]
+	return items, nil
 }
 
 //Pass in name, get item returned.
-func (i ItemList) GetItemByName(n string) *Item {
+func GetItemByName(n string, i map[int]Item) (Item, error) {
 	for _, i := range i {
 		if strings.EqualFold(i.Name, n) {
-			return &i
+			return i, nil
 		}
 	}
-	fmt.Println("Item not found")
-	return nil
+	return Item{}, fmt.Errorf("item with that name not found")
 }
 
 //Add item by passing in json data.
-func (i ItemList) AddItem(data string) ItemList {
+func AddItem(data string, i map[int]Item) (map[int]Item, error) {
 	bytes := []byte(data)
 	var item Item
 	err := json.Unmarshal(bytes, &item)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("could not add item: %w", err)
 	}
 	i[len(i)+1] = item
-	return i
-}
-
-func (i ItemList) ItemHandler(w http.ResponseWriter, r *http.Request) {
-	var item Item
-	query := r.URL.Query()
-	if len(query) == 0 {
-		urlPathSegments := strings.Split(r.URL.Path, "items/")
-		itemRequest, err := strconv.Atoi(urlPathSegments[len(urlPathSegments)-1])
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		item = i.GetItemByID(itemRequest)
-	} else {
-		item = *i.GetItemByName(query["name"][0])
-	}
-	switch r.Method {
-	case http.MethodGet:
-		itemJSON, err := json.Marshal(item)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(itemJSON)
-		fmt.Println("Item retrieved")
-
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	}
+	return i, nil
 }

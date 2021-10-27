@@ -1,0 +1,18 @@
+`<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Handy Haversack Web Server</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+	<h1>Welcome to the Handy Haversack Web Server</h1>
+    <h3>You will place calls to the base path https://handyhaversack.herokuapp.com/. Here are the options for using this server:</h3>
+    <ul>
+        <li>Use /items/ followed by either the item ID or a name query (?name=ITEMNAME).</li>
+        <li>Use /Characters to see all character inventories.</li>
+</ul>
+  </body>
+</html>`
