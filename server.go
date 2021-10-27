@@ -8,12 +8,8 @@ import (
 	"strings"
 )
 
-// Basic default handler
-type defaultHandler struct {
-	Message string
-}
+// Struct that provides access for handling items and characters.
 
-// Struct for handling items and characters.
 type Server struct {
 	items      map[int]Item
 	characters map[int]Character
@@ -69,4 +65,10 @@ func (s Server) DisplayCharacters(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
+}
+
+// Default Page Handler
+
+func ServeIndex(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "templates/index.html")
 }

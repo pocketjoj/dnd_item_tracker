@@ -20,7 +20,7 @@ func (c Character) CheckInventory() []Item {
 
 func AddItemByID(id int, i map[int]Item, c Character) ([]Item, error) {
 	value, ok := i[id]
-	if ok == true {
+	if ok {
 		c.Inventory = append(c.Inventory, value)
 		return c.Inventory, nil
 	}
