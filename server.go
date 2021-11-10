@@ -72,3 +72,9 @@ func (s Server) DisplayCharacters(w http.ResponseWriter, r *http.Request) {
 func ServeIndex(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "templates/index.html")
 }
+
+func (s Server) RefreshItems(w http.ResponseWriter, r *http.Request) {
+	RefreshSourceItems(raw)
+	w.WriteHeader(http.StatusAccepted)
+	w.Write([]byte("Request Successful. Please return to home page at ' https://handyhaversack.herokuapp.com/'."))
+}

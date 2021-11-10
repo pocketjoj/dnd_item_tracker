@@ -24,22 +24,23 @@ import (
 // Use json.RawMessage for the interface information. Will need to write a function to decode those items.
 
 type Item struct {
-	Name       string                 `json:"name,omitempty"`
-	Sources    map[string]interface{} `json:"sources,omitempty"`
-	Rarity     string                 `json:"rarity,omitempty"`
-	Entries    []interface{}          `json:"entries,omitempty"`
-	Attunement string                 `json:"reqAttune,omitempty"` //Attunement requires formatting based on entry.
-	Type       string                 `json:"type,omitempty"`
-	Properties []interface{}          `json:"properties,omitempty"`
-	Damage     map[string]interface{} `json:"damage,omitempty"`
-	Tier       string                 `json:"tier,omitempty"`
-	Srd        interface{}            `json:"srd,omitempty"`     //Srd has bool and string - will need switch case.
-	Charges    interface{}            `json:"charges,omitempty"` //Charges appears to contain a mixture of strings and numbers; will need to check this.
-	Image      bool                   `json:"image,omitempty"`
-	Range      string                 `json:"range,omitempty"`
-	Container  bool                   `json:"container,omitempty"`
-	Extends    map[string]interface{} `json:"extends,omitempty"`
-	ID         int                    `json:"id"`
+	Name       string          `json:"name,omitempty"`
+	Sources    json.RawMessage `json:"sources,omitempty"`
+	Rarity     string          `json:"rarity,omitempty"`
+	Entries    json.RawMessage `json:"entries,omitempty"`
+	Attunement json.RawMessage `json:"attunement,omitempty"`
+	Type       string          `json:"type,omitempty"`
+	Properties json.RawMessage `json:"properties,omitempty"`
+	Damage     json.RawMessage `json:"damage,omitempty"`
+	Tier       string          `json:"tier,omitempty"`
+	Srd        json.RawMessage `json:"srd,omitempty"`
+	Charges    json.RawMessage `json:"charges,omitempty"` // Charges info can remain in different types, conversion is not needed.
+	Image      bool            `json:"image,omitempty"`
+	Range      string          `json:"range,omitempty"`
+	Container  bool            `json:"container,omitempty"`
+	Extends    json.RawMessage `json:"extends,omitempty"` // It is fine for this data to remain as json, as it does not really need to be converted.
+	Custom     bool            `json:"custom"`
+	ID         int             `json:"id"`
 }
 
 // ItemList Helper Methods --------------------
@@ -61,6 +62,45 @@ func LoadItems(filename string) (map[int]Item, error) {
 		return nil, fmt.Errorf("could not load items: %w", err)
 	}
 	return items, nil
+}
+
+func RefreshSourceItems(filename string) error {
+	f, err := os.Open(filename)
+	if err != nil {
+		return fmt.Errorf("could not refresh items: %w", err)
+	}
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		return fmt.Errorf("could not read %s: %w", f.Name(), err)
+	}
+	var items []Item
+	err = json.Unmarshal(b, &items)
+	if err != nil {
+		return fmt.Errorf("could not refresh items: %w", err)
+	}
+	c := 1
+
+	formatted_items := make(map[int]Item)
+
+	for _, i := range items {
+		i.ID = c
+		formatted_items[i.ID] = i
+		c++
+	}
+
+	j, err := json.Marshal(formatted_items)
+	if err != nil {
+		return fmt.Errorf("problem marshalling formatted items into json: %w", err)
+	}
+
+	err = ioutil.WriteFile(item_source, j, 0644)
+	if err != nil {
+		return fmt.Errorf("could not write json file: %w", err)
+	}
+
+	return nil
 }
 
 //Pass in name, get item returned.

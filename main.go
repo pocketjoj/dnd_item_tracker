@@ -6,23 +6,29 @@ import (
 	"os"
 )
 
+const raw string = "json_data/raw_items.json"
+const item_source string = "json_data/source_items.json"
+const custom_items string = "json_data/homebrew.json"
+
 func main() {
 	// add flags
 
 	log.SetFlags(log.Lshortfile)
+
+	// Setting port value so that it will work on heroku but will be set at 5000 for local use.
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
 	}
 
-	// -------- Setting up item database. --------
-	items, err := LoadItems("json_data/items.json")
+	//-------- Setting up item database. --------
+	items, err := LoadItems(item_source)
 	if err != nil {
 		log.Fatal((err))
 	}
 
-	// -------- Setting up character database. --------
+	// // -------- Setting up character database. --------
 	characters, err := LoadCharacters("json_data/characters.json")
 	if err != nil {
 		log.Fatal((err))
@@ -33,9 +39,8 @@ func main() {
 		characters: characters,
 	}
 
-	// Setting port value so that it will work on heroku but will be set at 5000 for local use.
-
 	http.HandleFunc("/items/", server.HandleItems)
+	http.HandleFunc("/items/refresh", server.RefreshItems)
 	http.HandleFunc("/characters", server.DisplayCharacters)
 	http.HandleFunc("/", ServeIndex)
 	http.ListenAndServe(":"+port, nil)
