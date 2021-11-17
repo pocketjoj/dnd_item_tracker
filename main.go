@@ -45,14 +45,3 @@ func main() {
 	http.HandleFunc("/", ServeIndex)
 	http.ListenAndServe(":"+port, nil)
 }
-
-/*
-TO DO LIST
-
--- Format certain fields (per notes in Item Struct above).
--- Designate handlers for character methods.
--- Review comments; ensure clarity and brevity.
--- Write concise readme for project.
--- Add html formats so web server pages look better??
-
-*/
