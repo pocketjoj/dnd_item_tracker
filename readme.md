@@ -19,15 +19,18 @@ To test this, you can either:
 
  You can also query by name (e.g. https://handyhaversack.herokuapp.com/items/?name=greatsword), although if the name is not 100% accurate, you will receive an error. 
 
- Finally, you can test the POST functionality using the sample JSON below:
+ Finally, you can test adding items using the sample JSON below as the body of a POST request (using postman and directing it to https://handyhaversack.herokuapp.com/items/):
 
 {"name":"Huge Halberd","sources":{"Homebrew":1},"rarity":"rare","entries":"This over-sized weapon is almost impossible to manage but devastating when it hits. Any creature with size Large or smaller has disadvantage on all att rolls, but all damage rolls are doubled.","attunement":false,"type":"Spear","custom":true,"id":1294}
 
-To verify it is working, you can call:
+Note: You can download postman at:
+- https://www.postman.com/downloads/?utm_source=postman-home
+
+To verify your new item shows up, you can pull up:
 
 https://handyhaversack.herokuapp.com/items/?name=huge halberd (or https://handyhaversack.herokuapp.com/items/1294 if it is the only item you have added) to see you new item. Feel free to add other items if you like.
 
-Note: This is still a work in progress, but I believe it meets the requirements! :)
+Note: This is still a work in progress, and it is not a front-end product (so if you're using a browser, it is not very pretty), but I believe it meets the requirements! :)
 
 Thank you again!
 Joel
