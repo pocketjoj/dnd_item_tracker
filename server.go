@@ -18,7 +18,7 @@ type Server struct {
 
 // Server Method to either post the json for an Item by ID or Name (using GET) or allow adding of a custom item formatted in JSON (POST).
 
-func (s Server) HandleItems(w http.ResponseWriter, r *http.Request) {
+func (s *Server) HandleItems(w http.ResponseWriter, r *http.Request) {
 	var item Item
 	var err error
 	query := r.URL.Query()
@@ -64,7 +64,9 @@ func (s Server) HandleItems(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s Server) DisplayCharacters(w http.ResponseWriter, r *http.Request) {
+// Will display all characters and inventories -- would be good to use templates for this maybe.
+
+func (s *Server) DisplayCharacters(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		charactersJSON, err := json.Marshal(s.characters)
@@ -87,7 +89,9 @@ func ServeIndex(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "templates/index.html")
 }
 
-func (s *Server) RefreshItems(w http.ResponseWriter, r *http.Request) {
+// Admin function to re-format raw JSON data is source updates their JSON files.
+
+func (s *Server) ReloadItems(w http.ResponseWriter, r *http.Request) {
 	i, err := RefreshSourceItems(raw)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

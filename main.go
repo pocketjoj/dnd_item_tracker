@@ -40,7 +40,7 @@ func main() {
 	}
 
 	http.HandleFunc("/items/", server.HandleItems)
-	http.HandleFunc("/items/refresh", server.RefreshItems)
+	http.HandleFunc("/items/admin/reload", server.ReloadItems)
 	http.HandleFunc("/characters", server.DisplayCharacters)
 	http.HandleFunc("/", ServeIndex)
 	http.ListenAndServe(":"+port, nil)

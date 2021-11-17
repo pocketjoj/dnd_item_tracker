@@ -28,7 +28,9 @@ Note: You can download postman at:
 
 To verify your new item shows up, you can pull up:
 
-https://handyhaversack.herokuapp.com/items/?name=huge halberd (or https://handyhaversack.herokuapp.com/items/1294 if it is the only item you have added) to see you new item. Feel free to add other items if you like.
+https://handyhaversack.herokuapp.com/items/?name=huge halberd (or https://handyhaversack.herokuapp.com/items/1294 if it is the only item you have added) to see your new item. Feel free to add other items if you like. However, once added, the items will stay there until the server resets.
+
+Finally, the next step is to work on the character portion. For now, you can view the two characters (not much there yet) at https://handyhaversack.herokuapp.com/characters/.
 
 Note: This is still a work in progress, and it is not a front-end product (so if you're using a browser, it is not very pretty), but I believe it meets the requirements! :)
 
