@@ -8,7 +8,7 @@ import (
 
 const raw string = "json_data/raw_items.json"
 const item_source string = "json_data/source_items.json"
-const custom_items string = "json_data/homebrew.json"
+const updated_items string = "json_data/updated_items.json"
 
 func main() {
 	// add flags

@@ -64,21 +64,23 @@ func LoadItems(filename string) (map[int]Item, error) {
 	return items, nil
 }
 
-func RefreshSourceItems(filename string) error {
+// Initially used to help format JSON -- keeping method available for now. This is used if the raw data is updated and I need to parse it again using https://handyhaversack.herokuapp.com/items/refresh
+
+func RefreshSourceItems(filename string) (map[int]Item, error) {
 	f, err := os.Open(filename)
 	if err != nil {
-		return fmt.Errorf("could not refresh items: %w", err)
+		return nil, fmt.Errorf("could not refresh items: %w", err)
 	}
 	defer f.Close()
 
 	b, err := ioutil.ReadAll(f)
 	if err != nil {
-		return fmt.Errorf("could not read %s: %w", f.Name(), err)
+		return nil, fmt.Errorf("could not read %s: %w", f.Name(), err)
 	}
 	var items []Item
 	err = json.Unmarshal(b, &items)
 	if err != nil {
-		return fmt.Errorf("could not refresh items: %w", err)
+		return nil, fmt.Errorf("could not refresh items: %w", err)
 	}
 	c := 1
 
@@ -92,15 +94,15 @@ func RefreshSourceItems(filename string) error {
 
 	j, err := json.Marshal(formatted_items)
 	if err != nil {
-		return fmt.Errorf("problem marshalling formatted items into json: %w", err)
+		return nil, fmt.Errorf("problem marshalling formatted items into json: %w", err)
 	}
 
 	err = ioutil.WriteFile(item_source, j, 0644)
 	if err != nil {
-		return fmt.Errorf("could not write json file: %w", err)
+		return nil, fmt.Errorf("could not write json file: %w", err)
 	}
 
-	return nil
+	return formatted_items, nil
 }
 
 //Pass in name, get item returned.
@@ -114,13 +116,22 @@ func GetItemByName(n string, i map[int]Item) (Item, error) {
 }
 
 //Add item by passing in json data.
-func AddItem(data string, i map[int]Item) (map[int]Item, error) {
-	bytes := []byte(data)
+func AddItem(b []byte, i map[int]Item) (map[int]Item, error) {
 	var item Item
-	err := json.Unmarshal(bytes, &item)
+	err := json.Unmarshal(b, &item)
 	if err != nil {
 		return nil, fmt.Errorf("could not add item: %w", err)
 	}
-	i[len(i)+1] = item
+	item.ID = len(i) + 1
+	i[item.ID] = item
+
+	j, err := json.Marshal(i)
+	if err != nil {
+		return nil, fmt.Errorf("problem marshalling formatted items into json: %w", err)
+	}
+	err = ioutil.WriteFile(updated_items, j, 0644)
+	if err != nil {
+		return nil, fmt.Errorf("could not write json file: %w", err)
+	}
 	return i, nil
 }
