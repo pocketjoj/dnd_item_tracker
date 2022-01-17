@@ -25,7 +25,7 @@ func main() {
 	if port == "5000" {
 		cred = option.WithCredentialsFile("credentials.json")
 	} else {
-		cred = option.WithCredentialsJSON(json.parse(process.env.GOOGLE_CREDENTIALS))
+		cred = option.WithCredentialsFile("heroku_creds.json")
 	}
 	app, err := firebase.NewApp(ctx, nil, cred)
 	if err != nil {
