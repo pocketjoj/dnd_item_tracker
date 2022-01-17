@@ -12,7 +12,7 @@ require (
 require (
 	cloud.google.com/go v0.100.2 // indirect
 	cloud.google.com/go/compute v1.0.0 // indirect
-	cloud.google.com/go/firestore v1.6.1 // indirect
+	cloud.google.com/go/firestore v1.6.1
 	cloud.google.com/go/iam v0.1.0 // indirect
 	cloud.google.com/go/storage v1.18.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
