@@ -19,15 +19,23 @@ func main() {
 		port = "5000"
 	}
 
+	cred := `{
+		"projectId": process.env.FIREBASE_PROJECT_ID,
+		"private_key": process.env.FIREBASE_PRIVATE_KEY,
+		"client_email": process.env.FIREBASE_CLIENT_EMAIL,
+	}`
+
+	var sa option.ClientOption
+
+	if port == "5000" {
+		sa = option.WithCredentialsFile("credentials.json")
+	} else {
+		sa = option.WithCredentialsJSON([]byte(cred))
+	}
+
 	// Initialize Firebase DB
 	ctx := context.Background()
-	var cred option.ClientOption
-	if port == "5000" {
-		cred = option.WithCredentialsFile("credentials.json")
-	} else {
-		cred = option.WithCredentialsFile("heroku_creds.json")
-	}
-	app, err := firebase.NewApp(ctx, nil, cred)
+	app, err := firebase.NewApp(ctx, nil, sa)
 	if err != nil {
 		log.Fatalln(err)
 	}
